@@ -1,18 +1,52 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
-  </div>
+  <b-container>
+    <b-card-group deck>
+      <liga-card v-for="l in ligen" :key="l.id" :liga=l @deleteLiga="onDeleteLiga"></liga-card>
+    </b-card-group>
+  </b-container>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import HelloWorld from '@/components/HelloWorld.vue' // @ is an alias to /src
+import LigaService from '@/domain/api/liga.service'
+import LigaCard from '@/components/LigaCard.vue'
+import { Liga } from '@/domain/models/liga'
+import { Saison } from '@/domain/models/saison'
+import { DeleteResult } from '@/domain/models/deleteResult'
 
 @Component({
   components: {
-    HelloWorld
+    LigaCard
   }
 })
-export default class Home extends Vue {}
+export default class Home extends Vue {
+  private ligen: Liga[] = []
+  private loading = false
+
+  created () {
+    this.loadLigen()
+  }
+
+  async loadLigen () {
+    console.log('loadLigen ...')
+    this.loading = false
+    try {
+      const resp = await LigaService.getLigen()
+      if (resp) {
+        this.ligen = resp
+        console.log('Ligen', resp)
+        this.loading = true
+      }
+    } catch (e) {
+      console.error(e)
+      this.loading = false
+    }
+  }
+
+  async onDeleteLiga (isDeleted: boolean) {
+    if (isDeleted) {
+      await this.loadLigen()
+    }
+  }
+}
 </script>
