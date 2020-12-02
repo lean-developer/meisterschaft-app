@@ -1,10 +1,5 @@
 <template>
   <b-container>
-    <!--
-      <b-button variant="outline-primary" @click="onShowTabelle()">Tabelle</b-button>
-      <b-button variant="outline-primary" @click="onShowSpieltage()">Spieltage</b-button>
-      <b-button variant="outline-primary" @click="onShowUebersicht()">Uebersicht</b-button>
-    -->
       <div>
         <b-nav tabs fill>
           <b-nav-item :active=isTabelleActive @click="onShowTabelle()">Tabelle</b-nav-item>
@@ -40,7 +35,7 @@ export default class ClubLiga extends Vue {
     private ligaId = 0
     private liga!: Liga
     private saisonId = 0
-    private spieltagNr = 0
+    private spieltagNr = 1
     private teams: Team[] = []
     private isTabelleActive = false
     private isSpieltagActive = false
@@ -49,22 +44,25 @@ export default class ClubLiga extends Vue {
     async mounted () {
       this.ligaId = +this.$route.params.ligaId
       this.saisonId = +this.$route.params.saisonId
+      this.spieltagNr = +this.$route.params.spieltagNr
       await this.loadLiga()
-      this.onShowTabelle()
+      if (!this.spieltagNr) {
+        this.onShowTabelle()
+      }
     }
 
     onShowTabelle () {
       this.isTabelleActive = true
       this.isSpieltagActive = false
       this.isUebersichtActive = false
-      this.$router.push({ name: 'LigaTabelle', params: { spieltagNr: '1' } })
+      this.$router.push({ name: 'LigaTabelle', params: { spieltagNr: this.spieltagNr.toString() } })
     }
 
     onShowSpieltage () {
       this.isSpieltagActive = true
       this.isTabelleActive = false
       this.isUebersichtActive = false
-      this.$router.push({ name: 'LigaSpieltag', params: { spieltagNr: '1' } })
+      this.$router.push({ name: 'LigaSpieltag', params: { spieltagNr: this.spieltagNr.toString() } })
     }
 
     onShowUebersicht () {
@@ -88,23 +86,5 @@ export default class ClubLiga extends Vue {
         this.loading = false
       }
     }
-
-  /*
-    async loadTeams () {
-      console.log('loadTeams ...')
-      this.loading = false
-      try {
-        const resp = await TeamService.getTeamsBySaison(this.saisonId)
-        if (resp) {
-          this.teams = resp
-          console.log('Teams', resp)
-          this.loading = true
-        }
-      } catch (e) {
-        console.error(e)
-        this.loading = false
-      }
-    }
-    */
 }
 </script>
