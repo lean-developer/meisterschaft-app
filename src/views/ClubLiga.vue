@@ -1,8 +1,17 @@
 <template>
   <b-container>
+    <!--
       <b-button variant="outline-primary" @click="onShowTabelle()">Tabelle</b-button>
       <b-button variant="outline-primary" @click="onShowSpieltage()">Spieltage</b-button>
       <b-button variant="outline-primary" @click="onShowUebersicht()">Uebersicht</b-button>
+    -->
+      <div>
+        <b-nav tabs fill>
+          <b-nav-item :active=isTabelleActive @click="onShowTabelle()">Tabelle</b-nav-item>
+          <b-nav-item :active=isSpieltagActive @click="onShowSpieltage()">Spieltage</b-nav-item>
+          <b-nav-item :active=isUebersichtActive @click="onShowUebersicht()">Übersicht</b-nav-item>
+        </b-nav>
+      </div>
       <div class="mt-3">
           <router-view></router-view>
       </div>
@@ -33,24 +42,35 @@ export default class ClubLiga extends Vue {
     private saisonId = 0
     private spieltagNr = 0
     private teams: Team[] = []
+    private isTabelleActive = false
+    private isSpieltagActive = false
+    private isUebersichtActive = false
 
     async mounted () {
       this.ligaId = +this.$route.params.ligaId
       this.saisonId = +this.$route.params.saisonId
-      console.log('LIGA ' + this.ligaId + ', SAISON ' + this.saisonId)
       await this.loadLiga()
-      // await this.loadTeams()
+      this.onShowTabelle()
     }
 
     onShowTabelle () {
-      this.$router.push({ name: 'LigaTabelle' })
+      this.isTabelleActive = true
+      this.isSpieltagActive = false
+      this.isUebersichtActive = false
+      this.$router.push({ name: 'LigaTabelle', params: { spieltagNr: '1' } })
     }
 
     onShowSpieltage () {
+      this.isSpieltagActive = true
+      this.isTabelleActive = false
+      this.isUebersichtActive = false
       this.$router.push({ name: 'LigaSpieltag', params: { spieltagNr: '1' } })
     }
 
     onShowUebersicht () {
+      this.isUebersichtActive = true
+      this.isTabelleActive = false
+      this.isUebersichtActive = false
       this.$router.push({ name: 'LigaUebersicht' })
     }
 

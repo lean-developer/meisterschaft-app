@@ -1,5 +1,6 @@
 <template>
   <b-container>
+    <div v-if="loading" class="lds-ripple"><div></div><div></div></div>
     <b-card-group deck>
       <liga-card v-for="l in ligen" :key="l.id" :liga=l @deleteLiga="onDeleteLiga"></liga-card>
     </b-card-group>
@@ -29,18 +30,16 @@ export default class Home extends Vue {
 
   async loadLigen () {
     console.log('loadLigen ...')
-    this.loading = false
+    this.loading = true
     try {
       const resp = await LigaService.getLigen()
       if (resp) {
         this.ligen = resp
-        console.log('Ligen', resp)
-        this.loading = true
       }
     } catch (e) {
       console.error(e)
-      this.loading = false
     }
+    this.loading = false
   }
 
   async onDeleteLiga (isDeleted: boolean) {

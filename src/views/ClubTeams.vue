@@ -1,50 +1,53 @@
 <template>
     <b-container>
-        <b-row>
-            <b-form inline>
-                <b-form-group description="Mannschaft suchen">
-                    <b-form-input class="mr-1" v-model="searchTeam"></b-form-input>
-                    <b-button v-if="!isSearch" variant="outline-success" @click="onClickSearchTeam()">Suchen</b-button>
-                    <b-button v-if="isSearch" variant="outline-danger" @click="onClickResetSearchTeam()">Reset</b-button>
-                </b-form-group>
-            </b-form>
-            <b-form inline>
-                <b-form-group description="Eigene Mannschaft erstellen">
-                    <b-form-input class="ml-4 mr-1" v-model="ownTeam"></b-form-input>
-                    <b-button v-if="showButtonCreateOwnTeam" variant="outline-success" @click="onClickOwnTeam()">OK</b-button>
-                </b-form-group>
-            </b-form>
-        </b-row>
-        <b-row class="mt-3">
-            <b-col cols="8" v-if="loading">
-                <b-list-group class="row" v-for="t in teams" :key="t.id">
-                    <b-list-group-item @click="onClickTeam(t)" class="d-flex justify-content-between align-items-center">
-                        <b-badge class="mr-3" pill>{{t.rank}}</b-badge>
-                        <div class="team col">{{t.team}}</div>
-                        <div class="col">{{t.country}}</div>
-                        <b-badge variant="primary" pill>{{t.points}}</b-badge>
-                    </b-list-group-item>
-                </b-list-group>
-            </b-col>
-            <b-col>
-                <div class="position-fixed">
-                    <div class="ml-2 mb-3">
-                        <small>Wähle mindestens 4 Mannschaften aus und starte deine Liga!</small><br>
-                    </div>
-                    <b-badge v-if="showTeamsCount" variant="warning" pill class="teamCount mb-3">{{teamsCount}}</b-badge>
-                    <div class="selTeam" v-for="t in selectedTeams" :key="t.id">
-                        <div class="mr-2" style="display: inline">{{t.team}} ({{t.country}})</div>
-                        <button @click="onClickSelTeam(t)" type="button" class="close" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <b-button v-if="showButtonStarteLiga" class="mt-3" variant="outline-success" @click="onClickStarteLiga()">Liga starten</b-button>
-                    <div class="mt-3">
-                        {{ligaCreatedText}}
-                    </div>
-                </div>
-            </b-col>
-        </b-row>
+        <div v-if="loading" class="lds-ripple"><div></div><div></div></div>
+        <div v-if="!loading">
+          <b-row>
+              <b-form inline>
+                  <b-form-group description="Mannschaft suchen">
+                      <b-form-input class="mr-1" v-model="searchTeam"></b-form-input>
+                      <b-button v-if="!isSearch" variant="outline-success" @click="onClickSearchTeam()">Suchen</b-button>
+                      <b-button v-if="isSearch" variant="outline-danger" @click="onClickResetSearchTeam()">Reset</b-button>
+                  </b-form-group>
+              </b-form>
+              <b-form inline>
+                  <b-form-group description="Eigene Mannschaft erstellen">
+                      <b-form-input class="ml-4 mr-1" v-model="ownTeam"></b-form-input>
+                      <b-button v-if="showButtonCreateOwnTeam" variant="outline-success" @click="onClickOwnTeam()">OK</b-button>
+                  </b-form-group>
+              </b-form>
+          </b-row>
+          <b-row class="mt-3">
+              <b-col cols="8">
+                  <b-list-group class="row" v-for="t in teams" :key="t.id">
+                      <b-list-group-item @click="onClickTeam(t)" class="d-flex justify-content-between align-items-center">
+                          <b-badge class="mr-3" pill>{{t.rank}}</b-badge>
+                          <div class="team col">{{t.team}}</div>
+                          <div class="col">{{t.country}}</div>
+                          <b-badge variant="primary" pill>{{t.points}}</b-badge>
+                      </b-list-group-item>
+                  </b-list-group>
+              </b-col>
+              <b-col>
+                  <div class="position-fixed">
+                      <div class="ml-2 mb-3">
+                          <small>Wähle mindestens 4 Mannschaften aus und starte deine Liga!</small><br>
+                      </div>
+                      <b-badge v-if="showTeamsCount" variant="warning" pill class="teamCount mb-3">{{teamsCount}}</b-badge>
+                      <div class="selTeam" v-for="t in selectedTeams" :key="t.id">
+                          <div class="mr-2" style="display: inline">{{t.team}} ({{t.country}})</div>
+                          <button @click="onClickSelTeam(t)" type="button" class="close" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                          </button>
+                      </div>
+                      <b-button v-if="showButtonStarteLiga" class="mt-3" variant="outline-success" @click="onClickStarteLiga()">Liga starten</b-button>
+                      <div class="mt-3">
+                          {{ligaCreatedText}}
+                      </div>
+                  </div>
+              </b-col>
+          </b-row>
+        </div>
     </b-container>
 </template>
 
@@ -90,19 +93,17 @@ export default class ClubTeams extends Vue {
 
     async loadClubTeams () {
       console.log('loadClubTeams ...')
-      this.loading = false
+      this.loading = true
       try {
         const resp = await TeamService.getClubTeams()
         if (resp) {
           this.clubTeams = resp
           this.teams = this.clubTeams
-          console.log('ClubTeams', resp)
-          this.loading = true
         }
       } catch (e) {
         console.error(e)
-        this.loading = false
       }
+      this.loading = false
     };
 
     onClickTeam (team: Team) {
