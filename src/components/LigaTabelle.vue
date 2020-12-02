@@ -31,18 +31,19 @@ import { Score } from '@/domain/models/score'
 export default class LigaTabelle extends Vue {
   private ligaId = 0
   private saisonId = 0
-  private spieltagNr = 0
+  private spieltagNr = 1
   private loading = false
   private scores!: Score[] | undefined
 
   async created () {
     this.ligaId = +this.$route.params.ligaId
     this.saisonId = +this.$route.params.saisonId
-    this.spieltagNr = +this.$route.params.spieltagNr
+    if (this.$route.params.spieltagNr) {
+      this.spieltagNr = +this.$route.params.spieltagNr
+    }
+    console.log('SP', this.spieltagNr)
     if (this.spieltagNr && this.spieltagNr > 0) {
-      this.loading = false
-      this.scores = await LigaService.getSaisonScoresBySpieltag(this.saisonId, this.spieltagNr)
-      this.loading = true
+      await this.loadScores(this.spieltagNr)
     } else {
       this.loadTabelle()
     }
@@ -55,25 +56,22 @@ export default class LigaTabelle extends Vue {
     console.log('SCORES', this.scores)
   }
 
+  async loadScores (spieltagNr: number) {
+    this.loading = false
+    this.scores = await LigaService.getSaisonScoresBySpieltag(this.saisonId, spieltagNr)
+    this.$router.push({ name: 'LigaTabelle', params: { spieltagNr: spieltagNr.toString() } })
+    this.loading = true
+  }
+
   async onClickPrev () {
     if (this.spieltagNr <= 1) {
       return
     }
-    const prev: string = (--this.spieltagNr).toString()
-    console.log('toPrev', prev)
-    this.loading = false
-    this.scores = await LigaService.getSaisonScoresBySpieltag(this.saisonId, +prev)
-    this.$router.push({ name: 'LigaTabelle', params: { spieltagNr: prev } })
-    this.loading = true
+    await this.loadScores(--this.spieltagNr)
   }
 
   async onClickNext () {
-    const next: string = (++this.spieltagNr).toString()
-    console.log('toNext', next)
-    this.loading = false
-    this.scores = await LigaService.getSaisonScoresBySpieltag(this.saisonId, +next)
-    this.$router.push({ name: 'LigaTabelle', params: { spieltagNr: next } })
-    this.loading = true
+    this.loadScores(++this.spieltagNr)
   }
 }
 </script>

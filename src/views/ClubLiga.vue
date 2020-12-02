@@ -47,6 +47,7 @@ export default class ClubLiga extends Vue {
       this.spieltagNr = +this.$route.params.spieltagNr
       await this.loadLiga()
       if (!this.spieltagNr) {
+        this.spieltagNr = 1
         this.onShowTabelle()
       }
     }
