@@ -26,7 +26,8 @@ import { Liga } from '@/domain/models/liga'
 import { Saison } from '@/domain/models/saison'
 import { DeleteResult } from '@/domain/models/deleteResult'
 import { Spieltag } from '@/domain/models/spieltag'
-import teamService from '../domain/api/team.service'
+import TeamService from '../domain/api/team.service'
+import MatchService from '../domain/api/match.service'
 import { Team } from '@/domain/models/team'
 import TeamMatch from '@/components/TeamMatch.vue'
 
@@ -42,12 +43,20 @@ export default class LigaSpieltag extends Vue {
   private spieltage: Spieltag[] = []
   private loading = false
   private isModeBearbeiten = false
+  private changedMatches = new Map()
 
   async created () {
     this.ligaId = +this.$route.params.ligaId
     this.saisonId = +this.$route.params.saisonId
     this.spieltagNr = +this.$route.params.spieltagNr
     await this.loadSpieltage()
+  }
+
+  get nrLastSpieltag (): number {
+    if (this.spieltage) {
+      return this.spieltage[this.spieltage.length - 1].nr
+    }
+    return 0
   }
 
   get spieltag (): Spieltag {
@@ -58,7 +67,18 @@ export default class LigaSpieltag extends Vue {
     this.isModeBearbeiten = true
   }
 
-  onClickSave () {
+  async onClickSave () {
+    const matches = Array.from(this.changedMatches.values())
+    this.loading = false
+    for (const m of matches) {
+      await MatchService.saveMatch(m)
+    }
+    this.isModeBearbeiten = false
+    this.loading = true
+  }
+
+  onClickCancel () {
+    this.changedMatches = new Map()
     this.isModeBearbeiten = false
   }
 
@@ -82,6 +102,10 @@ export default class LigaSpieltag extends Vue {
   }
 
   onClickNext () {
+    if (this.spieltagNr >= this.nrLastSpieltag) {
+      return
+    }
+    this.onClickCancel()
     const next: string = (++this.spieltagNr).toString()
     console.log('toNext', next)
     this.$router.push({ name: 'LigaSpieltag', params: { spieltagNr: next } })
@@ -98,13 +122,11 @@ export default class LigaSpieltag extends Vue {
       const resp = await SpieltagService.getSpieltageBySaison(this.saisonId)
       if (resp) {
         this.spieltage = resp
-        console.log('Spieltage', resp)
-        this.loading = true
       }
     } catch (e) {
       console.error(e)
-      this.loading = false
     }
+    this.loading = true
   };
 }
 </script>
