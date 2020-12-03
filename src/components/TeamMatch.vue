@@ -22,8 +22,8 @@
         </b-col>
         <b-col v-if="isModeBearbeiten" class="bg-1">
             <b-input-group>
-                <b-input type="text"></b-input>
-                <b-input type="text"></b-input>
+                <b-input type="text" v-model="inputHeimTore"></b-input>
+                <b-input type="text" v-model="inputGastTore"></b-input>
             </b-input-group>
         </b-col>
       </b-row>
@@ -41,6 +41,19 @@ import { Match } from '@/domain/models/match'
 export default class TeamMatch extends Vue {
     @Prop({ required: false }) isModeBearbeiten = false
     @Prop({ required: true }) match!: Match
+    private inputHeimTore!: number;
+    private inputGastTore!: number;
+
+    created () {
+      if (this.match) {
+        if (this.match.heimTore > -1) {
+          this.inputHeimTore = this.match.heimTore
+        }
+        if (this.match.gastTore > -1) {
+          this.inputGastTore = this.match.gastTore
+        }
+      }
+    }
 
     get imgDefault () {
       return 'https://www.clubworldranking.com/modules/images/teams/small/_434.png'
