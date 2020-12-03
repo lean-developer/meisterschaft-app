@@ -17,7 +17,7 @@
         </b-col>
         <b-col v-if="!isModeBearbeiten" class="bg">
             <div class="mt-3">
-                {{match.heimTore}}:{{match.gastTore}}
+                {{heimTore}}:{{gastTore}}
             </div>
         </b-col>
         <b-col v-if="isModeBearbeiten" class="bg-1">
@@ -51,6 +51,21 @@ export default class TeamMatch extends Vue {
       if (this.match && this.match.gastTore > -1) {
         this.inputGastTore = this.match.gastTore
       }
+    }
+
+    // {{match.heimTore}}:{{match.gastTore}}
+    get heimTore () {
+      if (this.match && this.match.heimTore > -1) {
+        return this.match.heimTore
+      }
+      return ''
+    }
+
+    get gastTore () {
+      if (this.match && this.match.gastTore > -1) {
+        return this.match.gastTore
+      }
+      return ''
     }
 
     @Emit('changeMatch')
