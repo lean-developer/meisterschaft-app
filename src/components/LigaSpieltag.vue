@@ -53,6 +53,13 @@ export default class LigaSpieltag extends Vue {
     await this.loadSpieltage()
   }
 
+  get nrLastSpieltag (): number {
+    if (this.spieltage) {
+      return this.spieltage[this.spieltage.length - 1].nr
+    }
+    return 0
+  }
+
   get spieltag (): Spieltag {
     return this.getSpieltag(this.spieltagNr)
   }
@@ -96,6 +103,9 @@ export default class LigaSpieltag extends Vue {
   }
 
   onClickNext () {
+    if (this.spieltagNr >= this.nrLastSpieltag) {
+      return
+    }
     this.onClickCancel()
     const next: string = (++this.spieltagNr).toString()
     console.log('toNext', next)
