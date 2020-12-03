@@ -15,10 +15,16 @@
                 {{match.gast.name}}
             </div>
         </b-col>
-        <b-col class="bg">
+        <b-col v-if="!isModeBearbeiten" class="bg">
             <div class="mt-3">
                 {{match.heimTore}}:{{match.gastTore}}
             </div>
+        </b-col>
+        <b-col v-if="isModeBearbeiten" class="bg-1">
+            <b-input-group>
+                <b-input type="text"></b-input>
+                <b-input type="text"></b-input>
+            </b-input-group>
         </b-col>
       </b-row>
   </div>
@@ -33,6 +39,7 @@ import { Match } from '@/domain/models/match'
   }
 })
 export default class TeamMatch extends Vue {
+    @Prop({ required: false }) isModeBearbeiten = false
     @Prop({ required: true }) match!: Match
 
     get imgDefault () {
@@ -44,6 +51,10 @@ export default class TeamMatch extends Vue {
 <style scoped>
     .bg {
         background-color: whitesmoke
+    }
+    .bg-1 {
+        background-color: whitesmoke;
+        padding-top: 6px;
     }
     .match {
         padding-top: 0.5rem;

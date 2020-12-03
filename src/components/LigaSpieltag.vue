@@ -3,13 +3,17 @@
     <div v-if="loading">
       <div class="mt-4 mb-3">
         <b-button variant="light" @click="onClickPrev()"><b-icon-chevron-left></b-icon-chevron-left></b-button>
-        <div class="ml-3 mr-3" style="display: inline">
-            <h4 style="display: inline">Spieltag {{spieltag.nr}}</h4>
+        <div class="caption" style="display: inline">
+            <h4 style="display: inline; padding-top: 3rem">Spieltag {{spieltag.nr}}</h4>
         </div>
         <b-button variant="light" @click="onClickNext()"><b-icon-chevron-right></b-icon-chevron-right></b-button>
+        <div style="display: inline; float: right">
+          <b-button v-if="!isModeBearbeiten" variant="outline-success" @click="onClickBearbeiten()">Bearbeiten</b-button>
+          <b-button v-if="isModeBearbeiten" variant="outline-danger" @click="onClickSave()">Speichern</b-button>
+        </div>
       </div>
       <div v-for="m in spieltag.matches" :key="m.id">
-          <team-match :match=m></team-match>
+          <team-match :match=m :isModeBearbeiten=isModeBearbeiten></team-match>
       </div>
     </div>
   </b-container>
@@ -37,6 +41,7 @@ export default class LigaSpieltag extends Vue {
   private spieltagNr = 0
   private spieltage: Spieltag[] = []
   private loading = false
+  private isModeBearbeiten = false
 
   async created () {
     this.ligaId = +this.$route.params.ligaId
@@ -47,7 +52,15 @@ export default class LigaSpieltag extends Vue {
 
   get spieltag (): Spieltag {
     return this.getSpieltag(this.spieltagNr)
-  };
+  }
+
+  onClickBearbeiten () {
+    this.isModeBearbeiten = true
+  }
+
+  onClickSave () {
+    this.isModeBearbeiten = false
+  }
 
   onClickPrev () {
     if (this.spieltagNr <= 1) {
@@ -95,3 +108,9 @@ export default class LigaSpieltag extends Vue {
   };
 }
 </script>
+
+<style scoped>
+  .caption {
+    margin-top: 2rem;
+  }
+</style>
