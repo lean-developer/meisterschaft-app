@@ -71,6 +71,7 @@ export default class LigaSpieltag extends Vue {
   }
 
   onClickCancel () {
+    this.changedMatches = new Map()
     this.isModeBearbeiten = false
   }
 
@@ -78,6 +79,7 @@ export default class LigaSpieltag extends Vue {
     if (this.spieltagNr <= 1) {
       return
     }
+    this.onClickCancel()
     const prev: string = (--this.spieltagNr).toString()
     console.log('toPrev', prev)
     this.$router.push({ name: 'LigaSpieltag', params: { spieltagNr: prev } })
@@ -94,6 +96,7 @@ export default class LigaSpieltag extends Vue {
   }
 
   onClickNext () {
+    this.onClickCancel()
     const next: string = (++this.spieltagNr).toString()
     console.log('toNext', next)
     this.$router.push({ name: 'LigaSpieltag', params: { spieltagNr: next } })
