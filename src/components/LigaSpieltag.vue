@@ -27,7 +27,8 @@ import { Liga } from '@/domain/models/liga'
 import { Saison } from '@/domain/models/saison'
 import { DeleteResult } from '@/domain/models/deleteResult'
 import { Spieltag } from '@/domain/models/spieltag'
-import teamService from '../domain/api/team.service'
+import TeamService from '../domain/api/team.service'
+import MatchService from '../domain/api/match.service'
 import { Team } from '@/domain/models/team'
 import TeamMatch from '@/components/TeamMatch.vue'
 import { Match } from '@/domain/models/match'
@@ -72,9 +73,15 @@ export default class LigaSpieltag extends Vue {
     this.isModeBearbeiten = true
   }
 
-  onClickSave () {
+  async onClickSave () {
     console.log('SAVE MATCHES', this.changedMatches)
+    const matches = Array.from(this.changedMatches.values())
+    this.loading = false
+    for (const m of matches) {
+      await MatchService.saveMatch(m)
+    }
     this.isModeBearbeiten = false
+    this.loading = true
   }
 
   onClickCancel () {
@@ -123,13 +130,11 @@ export default class LigaSpieltag extends Vue {
       const resp = await SpieltagService.getSpieltageBySaison(this.saisonId)
       if (resp) {
         this.spieltage = resp
-        console.log('Spieltage', resp)
-        this.loading = true
       }
     } catch (e) {
       console.error(e)
-      this.loading = false
     }
+    this.loading = true
   };
 }
 </script>
