@@ -22,8 +22,8 @@
         </b-col>
         <b-col v-if="isModeBearbeiten" class="bg-1">
             <b-input-group>
-                <b-input type="text" v-model="inputHeimTore"></b-input>
-                <b-input type="text" v-model="inputGastTore"></b-input>
+                <b-input type="text" @change="onChangeMatch()" v-model="inputHeimTore"></b-input>
+                <b-input type="text" @change="onChangeMatch()" v-model="inputGastTore"></b-input>
             </b-input-group>
         </b-col>
       </b-row>
@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
 import { Match } from '@/domain/models/match'
 
 @Component({
@@ -45,14 +45,19 @@ export default class TeamMatch extends Vue {
     private inputGastTore!: number;
 
     created () {
-      if (this.match) {
-        if (this.match.heimTore > -1) {
-          this.inputHeimTore = this.match.heimTore
-        }
-        if (this.match.gastTore > -1) {
-          this.inputGastTore = this.match.gastTore
-        }
+      if (this.match && this.match.heimTore > -1) {
+        this.inputHeimTore = this.match.heimTore
       }
+      if (this.match && this.match.gastTore > -1) {
+        this.inputGastTore = this.match.gastTore
+      }
+    }
+
+    @Emit('changeMatch')
+    onChangeMatch () {
+      this.match.heimTore = this.inputHeimTore
+      this.match.gastTore = this.inputGastTore
+      return this.match
     }
 
     get imgDefault () {
