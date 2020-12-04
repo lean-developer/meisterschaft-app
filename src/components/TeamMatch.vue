@@ -5,14 +5,14 @@
             <div class="team">
                 <b-img v-if="match.heim.img" thumbnail :src=match.heim.img alt=""></b-img>
                 <b-img v-if="!match.heim.img" thumbnail :src=imgDefault alt=""></b-img>
-                {{match.heim.name}}
+                <div class="team-name">{{match.heim.name}}</div>
             </div>
         </b-col>
         <b-col class="bg">
             <div class="team">
                 <b-img v-if="match.gast.img" thumbnail :src=match.gast.img alt=""></b-img>
                 <b-img v-if="!match.gast.img" thumbnail :src=imgDefault alt=""></b-img>
-                {{match.gast.name}}
+                <div class="team-name">{{match.gast.name}}</div>
             </div>
         </b-col>
         <b-col v-if="!isModeBearbeiten" class="bg">
@@ -53,7 +53,6 @@ export default class TeamMatch extends Vue {
       }
     }
 
-    // {{match.heimTore}}:{{match.gastTore}}
     get heimTore () {
       if (this.match && this.match.heimTore > -1) {
         return this.match.heimTore
@@ -94,5 +93,28 @@ export default class TeamMatch extends Vue {
     }
     .team {
         text-align: left;
+    }
+    .team-name {
+        font-size: 16px;
+        display: inline;
+    }
+     /* Small devices (landscape phones, 576px and up) */
+    @media (min-width: 576px) and (max-width: 767.98px) {
+      .team-name {
+          font-size: 10px;
+      }
+    }
+    /* Medium devices (tablets, 768px and up) */
+    @media (min-width: 768px) and (max-width: 991.98px) {
+      .team-name {
+          font-size: 10px;
+      }
+    }
+    /* Large devices (desktops, 992px and up) */
+    @media (min-width: 992px) and (max-width: 1199.98px) {
+      .team-name {
+          font-size: 10px;
+          display: inline;
+      }
     }
 </style>
