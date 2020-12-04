@@ -37,8 +37,10 @@
                     </b-col>
                 </b-form-row>
             </b-form>
-            <div v-for="t in teams" :key="t.id">
+            <div v-if="teams">
+              <div v-for="t in teams" :key="t.id">
                 {{t.name}}, {{t.country}} ({{t.id}})
+              </div>
             </div>
     </div>
   </b-container>
@@ -49,24 +51,44 @@ import { Component, Vue, Prop, Model } from 'vue-property-decorator'
 import { Liga } from '@/domain/models/liga'
 import { Team } from '@/domain/models/team'
 import LigaService from '../domain/api/liga.service'
+import teamService from '@/domain/api/team.service'
 
 @Component({
   components: {
   }
 })
-export default class LigaUebersicht extends Vue {
-  @Prop({ required: true }) saisonId!: number
-  @Prop({ required: true }) liga!: Liga
-  @Prop({ required: true }) teams!: Team[]
+export default class LigaStatistik extends Vue {
+  private ligaId = 0
+  private saisonId = 0
+  @Model() private liga: Liga | undefined
+  private teams: Team[] | undefined
   private edit = false
   private serviceError = ''
   @Model() private name = ''
 
+  async created () {
+    this.ligaId = +this.$route.params.ligaId
+    this.saisonId = +this.$route.params.saisonId
+    await this.loadLiga()
+    await this.loadTeams()
+  }
+
   mounted () {
-    this.name = this.liga.name
+    if (this.liga) { this.name = this.liga.name }
+  }
+
+  async loadLiga () {
+    this.liga = await LigaService.getLiga(this.ligaId)
+  }
+
+  async loadTeams () {
+    this.teams = await teamService.getTeamsBySaison(this.saisonId)
   }
 
   async onSubmit () {
+    if (!this.liga) {
+      return
+    }
     if (!this.changed()) {
       return
     }
@@ -91,11 +113,17 @@ export default class LigaUebersicht extends Vue {
   }
 
   onReset () {
+    if (!this.liga) {
+      return
+    }
     this.name = this.liga.name
     this.serviceError = ''
   }
 
   changed (): boolean {
+    if (!this.liga) {
+      return false
+    }
     return this.name !== this.liga.name
   }
 

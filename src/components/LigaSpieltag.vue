@@ -1,18 +1,24 @@
 <template>
   <b-container>
     <div v-if="loading">
-      <div class="mt-4 mb-3">
-        <b-button variant="light" @click="onClickPrev()"><b-icon-chevron-left></b-icon-chevron-left></b-button>
-        <div class="caption" style="display: inline">
-            <h4 style="display: inline; padding-top: 3rem">Spieltag {{spieltag.nr}}</h4>
-        </div>
-        <b-button variant="light" @click="onClickNext()"><b-icon-chevron-right></b-icon-chevron-right></b-button>
-        <div style="display: inline; float: right">
-          <b-button v-if="!isModeBearbeiten" variant="outline-success" @click="onClickBearbeiten()">Bearbeiten</b-button>
-          <b-button v-if="isModeBearbeiten" variant="outline-danger" @click="onClickSave()">Speichern</b-button>
-          <b-button-close class="ml-1" v-if="isModeBearbeiten" variant="light" @click="onClickCancel()"></b-button-close>
-        </div>
-      </div>
+      <b-row>
+        <b-col cols="7">
+          <div style="text-align: left">
+            <p>
+              <b-button size="sm" variant="light" @click="onClickPrev()"><b-icon-chevron-left></b-icon-chevron-left></b-button>
+              Spieltag {{spieltag.nr}}
+              <b-button size="sm" variant="light" @click="onClickNext()"><b-icon-chevron-right></b-icon-chevron-right></b-button>
+            </p>
+          </div>
+        </b-col>
+        <b-col>
+          <div style="display: inline; float: right">
+            <b-button size="sm" v-if="!isModeBearbeiten" variant="outline-success" @click="onClickBearbeiten()">Bearbeiten</b-button>
+            <b-button size="sm" v-if="isModeBearbeiten" variant="success" @click="onClickSave()"><b-icon-check></b-icon-check></b-button>
+            <b-button-close class="ml-1" v-if="isModeBearbeiten" variant="light" @click="onClickCancel()"></b-button-close>
+          </div>
+        </b-col>
+      </b-row>
       <div v-for="m in spieltag.matches" :key="m.id">
           <team-match :match=m :isModeBearbeiten=isModeBearbeiten @changeMatch="onChangeMatch"></team-match>
       </div>
@@ -29,6 +35,7 @@ import { DeleteResult } from '@/domain/models/deleteResult'
 import { Spieltag } from '@/domain/models/spieltag'
 import TeamService from '../domain/api/team.service'
 import MatchService from '../domain/api/match.service'
+
 import { Team } from '@/domain/models/team'
 import TeamMatch from '@/components/TeamMatch.vue'
 import { Match } from '@/domain/models/match'

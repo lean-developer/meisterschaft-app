@@ -1,13 +1,12 @@
 <template>
   <b-container>
     <div>
-      <div class="mt-3 mb-3">
-        <b-button variant="light" @click="onClickPrev()"><b-icon-chevron-left></b-icon-chevron-left></b-button>
-         <div class="ml-3 mr-3" style="display: inline">
-            <h4 style="display: inline">Spieltag {{spieltagNr}}</h4>
-        </div>
-        <b-button variant="light" @click="onClickNext()"><b-icon-chevron-right></b-icon-chevron-right></b-button>
-      </div>
+      <b-row>
+        <b-button size="sm" variant="light" @click="onClickPrev()"><b-icon-chevron-left></b-icon-chevron-left></b-button>
+        <b-button size="sm" variant="light" @click="onClickNext()"><b-icon-chevron-right></b-icon-chevron-right></b-button>
+      </b-row>
+      <tabelle-head></tabelle-head>
+      <div class="line"></div>
       <div v-if="loading">
         <div v-for="(score, index) in scores" :key="score.mannschaft.id">
           <tabelle-row :index=index :score=score></tabelle-row>
@@ -21,11 +20,13 @@
 import { Component, Vue, Prop, Model } from 'vue-property-decorator'
 import LigaService from '../domain/api/liga.service'
 import TabelleRow from '@/components/TabelleRow.vue'
+import TabelleHead from '@/components/TabelleHead.vue'
 import { Score } from '@/domain/models/score'
 
 @Component({
   components: {
-    TabelleRow
+    TabelleRow,
+    TabelleHead
   }
 })
 export default class LigaTabelle extends Vue {
@@ -42,7 +43,7 @@ export default class LigaTabelle extends Vue {
       this.spieltagNr = +this.$route.params.spieltagNr
     }
     console.log('SP', this.spieltagNr)
-    if (this.spieltagNr && this.spieltagNr > 0) {
+    if (!Number.isNaN(this.spieltagNr) && this.spieltagNr > 0) {
       await this.loadScores(this.spieltagNr)
     } else {
       this.loadTabelle()
@@ -75,3 +76,11 @@ export default class LigaTabelle extends Vue {
   }
 }
 </script>
+
+<style scoped>
+   .line {
+    width: 100%;
+    border-bottom: 2px solid black;
+    position: relative;
+   }
+</style>

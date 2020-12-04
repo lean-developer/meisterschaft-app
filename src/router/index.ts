@@ -5,7 +5,7 @@ import ClubTeams from '../views/ClubTeams.vue'
 import ClubLiga from '../views/ClubLiga.vue'
 import LigaTabelle from '../components/LigaTabelle.vue'
 import LigaSpieltag from '../components/LigaSpieltag.vue'
-import LigaUebersicht from '../components/LigaUebersicht.vue'
+import LigaStatistik from '../components/LigaStatistik.vue'
 
 Vue.use(VueRouter)
 
@@ -36,9 +36,9 @@ const routes: Array<RouteConfig> = [
         component: LigaSpieltag
       },
       {
-        path: 'uebersicht',
-        name: 'LigaUebersicht',
-        component: LigaUebersicht
+        path: 'statistik',
+        name: 'LigaStatistik',
+        component: LigaStatistik
       }
     ]
   },
