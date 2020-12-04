@@ -10,10 +10,11 @@
         <div style="display: inline; float: right">
           <b-button v-if="!isModeBearbeiten" variant="outline-success" @click="onClickBearbeiten()">Bearbeiten</b-button>
           <b-button v-if="isModeBearbeiten" variant="outline-danger" @click="onClickSave()">Speichern</b-button>
+          <b-button v-if="isModeBearbeiten" variant="light" @click="onClickCancel()">Abbrechen</b-button>
         </div>
       </div>
       <div v-for="m in spieltag.matches" :key="m.id">
-          <team-match :match=m :isModeBearbeiten=isModeBearbeiten></team-match>
+          <team-match :match=m :isModeBearbeiten=isModeBearbeiten @changeMatch="onChangeMatch"></team-match>
       </div>
     </div>
   </b-container>
@@ -30,6 +31,7 @@ import TeamService from '../domain/api/team.service'
 import MatchService from '../domain/api/match.service'
 import { Team } from '@/domain/models/team'
 import TeamMatch from '@/components/TeamMatch.vue'
+import { Match } from '@/domain/models/match'
 
 @Component({
   components: {
@@ -63,11 +65,16 @@ export default class LigaSpieltag extends Vue {
     return this.getSpieltag(this.spieltagNr)
   }
 
+  onChangeMatch (changedMatch: Match) {
+    this.changedMatches.set(changedMatch.id, changedMatch)
+  }
+
   onClickBearbeiten () {
     this.isModeBearbeiten = true
   }
 
   async onClickSave () {
+    console.log('SAVE MATCHES', this.changedMatches)
     const matches = Array.from(this.changedMatches.values())
     this.loading = false
     for (const m of matches) {
@@ -86,6 +93,7 @@ export default class LigaSpieltag extends Vue {
     if (this.spieltagNr <= 1) {
       return
     }
+    this.onClickCancel()
     const prev: string = (--this.spieltagNr).toString()
     console.log('toPrev', prev)
     this.$router.push({ name: 'LigaSpieltag', params: { spieltagNr: prev } })
