@@ -94,27 +94,34 @@ export default class TeamMatch extends Vue {
     .team {
         text-align: left;
     }
-    .team-name {
+
+    /* Extra small devices (phones, 600px and down) */
+    [class="team-name"] {
+        font-size: 10px;
+    }
+
+    /* Small devices (portrait tablets and large phones, 600px and up) */
+    @media only screen and (min-width: 600px) {
+      .team-name {
+        font-size: 14px;
+      }
+    }
+
+    /* Medium devices (landscape tablets, 768px and up) */
+    @media only screen and (min-width: 768px) {
+      .team-name {
+        white-space: nowrap;
+        padding-top: 5px;
+        font-size: 16px;
+      }
+    }
+
+    /* Large devices (laptops/desktops, 992px and up) */
+    @media only screen and (min-width: 992px) {
+      .team-name {
+        padding-left: 1rem;
         font-size: 16px;
         display: inline;
-    }
-     /* Small devices (landscape phones, 576px and up) */
-    @media (min-width: 576px) and (max-width: 767.98px) {
-      .team-name {
-          font-size: 10px;
-      }
-    }
-    /* Medium devices (tablets, 768px and up) */
-    @media (min-width: 768px) and (max-width: 991.98px) {
-      .team-name {
-          font-size: 10px;
-      }
-    }
-    /* Large devices (desktops, 992px and up) */
-    @media (min-width: 992px) and (max-width: 1199.98px) {
-      .team-name {
-          font-size: 10px;
-          display: inline;
       }
     }
 </style>

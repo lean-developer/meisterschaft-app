@@ -10,7 +10,7 @@
         <div style="display: inline; float: right">
           <b-button v-if="!isModeBearbeiten" variant="outline-success" @click="onClickBearbeiten()">Bearbeiten</b-button>
           <b-button v-if="isModeBearbeiten" variant="outline-danger" @click="onClickSave()">Speichern</b-button>
-          <b-button v-if="isModeBearbeiten" variant="light" @click="onClickCancel()">Abbrechen</b-button>
+          <b-button-close class="ml-1" v-if="isModeBearbeiten" variant="light" @click="onClickCancel()"></b-button-close>
         </div>
       </div>
       <div v-for="m in spieltag.matches" :key="m.id">
